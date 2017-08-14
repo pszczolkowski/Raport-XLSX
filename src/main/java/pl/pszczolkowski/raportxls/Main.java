@@ -13,20 +13,21 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        if (args.length != 4) {
+        if (args.length != 5) {
             System.out.println("invalid number of arguments");
-            System.out.println("required arguments are: <template_file_path> <destination_cell> <filenames_file_path> <source_cell>");
+            System.out.println("required arguments are: <template_file_path> <department_name_cell> <department_owner_cell> <filenames_file_path> <source_cell>");
         }
 
         String templateFilePath = args[0];
-        String destinationCellAddress = args[1];
-        String fileNamesFilePath = args[2];
-        String sourceCellAddress = args[3];
+        String departmentNameCellAddress = args[1];
+        String departmenrOwnerCellAddress = args[2];
+        String fileNamesFilePath = args[3];
+        String sourceCellAddress = args[4];
 
-        List<String> fileNames;
+        List<Department> departments;
         try {
-            fileNames = FileNamesReader.read(fileNamesFilePath, sourceCellAddress);
-            System.out.println("file names read from " + fileNamesFilePath);
+            departments = DepartmentsReader.read(fileNamesFilePath, sourceCellAddress);
+            System.out.println("department info read from " + fileNamesFilePath);
         } catch (FileNotFoundException e) {
             System.err.println("file " + fileNamesFilePath + " does not exist");
             return;
@@ -53,13 +54,13 @@ public class Main {
         }
 
         String currentDirectory = System.getProperty("user.dir");
-        FileGenerator fileGenerator = new FileGenerator(workbook, destinationCellAddress, currentDirectory);
-        for (String fileName : fileNames) {
+        FileGenerator fileGenerator = new FileGenerator(workbook, departmentNameCellAddress, departmenrOwnerCellAddress, currentDirectory);
+        for (Department department : departments) {
             try {
-                fileGenerator.generate(fileName);
-                System.out.println("saved file " + fileName);
+                fileGenerator.generate(department);
+                System.out.println("saved file " + department.getName());
             } catch (IOException e) {
-                System.err.println("could not save file " + fileName);
+                System.err.println("could not save file " + department.getName());
             }
         }
     }
